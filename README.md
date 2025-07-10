@@ -19,9 +19,7 @@
 1. Compile the program:
 ```bash
 g++ mine_path_finder.cpp -o mine_path_finder
-
 ---
-
 Examle:
 Enter map dimensions (Row's, Column's): 3 4
 Enter mine map ('*' for start, 'X' for exit, '.' for path, '#' for wall. Use the space button between your inputs.):
