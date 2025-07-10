@@ -1,0 +1,97 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+// Constants for maximum map size
+const int MAX = 50;
+
+// Directions for movement: North, East, South, West
+int dx[4] = {-1, 0, 1, 0};  // Row movement: up, right, down, left
+int dy[4] = {0, 1, 0, -1};  // Column movement
+char dir[4] = {'N', 'E', 'S', 'W'};  // Direction characters for the path
+
+// Mine map and visited positions array
+char mine[MAX][MAX];          // Stores the mine map
+bool visited[MAX][MAX];       // Marks visited positions to avoid revisiting
+
+// Struct to represent a position inside the mine
+struct Position {
+    int x, y;       // Current position in the grid
+    string path;    // Path string storing movement directions from start to this point
+};
+
+int main() {
+    int N, M;  // Variables to store the number of rows (N) and columns (M)
+    
+    // Input mine dimensions
+    cout << "Enter map dimensions (Row's, Column's): ";
+    cin >> N >> M;
+
+    Position start, exit;   // Variables for start and exit positions
+    bool foundStart = false, foundExit = false;
+
+    // Input mine map with instructions
+    cout << "Enter mine map ('*' for start, 'X' for exit, '.' for path, '#' for wall.  Use space button, inbetween your input's.):" << endl;
+
+    // Read mine map from user input
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < M; j++) {
+            cin >> mine[i][j];
+
+            // Locate start position
+            if (mine[i][j] == '*') {
+                start = {i, j, ""};
+                foundStart = true;
+            }
+            // Locate exit position
+            if (mine[i][j] == 'X') {
+                exit = {i, j, ""};
+                foundExit = true;
+            }
+        }
+    }
+
+    // Check that both start and exit positions exist
+    if (!foundStart || !foundExit) {
+        cout << "Map must contain one '*' (start) and one 'X' (exit)." << endl;
+        return 1;
+    }
+
+    // Breadth-First Search (BFS) algorithm for finding the shortest path
+    Position queue[MAX * MAX];  // Queue for BFS
+    int front = 0, back = 0;    // Queue pointers
+
+    // Initialize queue with start position
+    queue[back++] = start;
+    visited[start.x][start.y] = true;
+
+    // BFS loop
+    while (front < back) {
+        Position curr = queue[front++];  // Dequeue the next position
+
+        // Check if current position is the exit
+        if (curr.x == exit.x && curr.y == exit.y) {
+            cout << "Path to exit: " << curr.path << " " << endl;
+            return 0;  // Exit after finding the path
+        }
+
+        // Try all four directions from the current position
+        for (int i = 0; i < 4; i++) {
+            int nx = curr.x + dx[i];  // New row
+            int ny = curr.y + dy[i];  // New column
+
+            // Check boundaries and whether the next position is a valid move
+            if (nx >= 0 && nx < N && ny >= 0 && ny < M &&
+                !visited[nx][ny] &&
+                (mine[nx][ny] == '.' || mine[nx][ny] == 'X')) {
+                visited[nx][ny] = true;  // Mark new position as visited
+                queue[back++] = {nx, ny, curr.path + dir[i]};  // Add to queue with updated path
+            }
+        }
+    }
+
+    // No path found after BFS completion
+    cout << "No path to the exit found." << endl;
+    return 0;
+}
