@@ -1,4 +1,4 @@
-# 🪨 Mine Path Finder
+# 🪨 Cave Escape Algorithm
 
 **Mine Path Finder** is a console-based C++ application that finds the shortest path from the starting position to the exit on a mine map using the **Breadth-First Search (BFS)** algorithm.
 
